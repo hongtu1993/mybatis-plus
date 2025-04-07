@@ -7,7 +7,7 @@ allprojects {
 
 ext {
     configuration = [
-        javaVersion = JavaVersion.VERSION_21
+        javaVersion = JavaVersion.VERSION_17
     ]
 
     libraries = [
