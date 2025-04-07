@@ -16,6 +16,7 @@
 package com.baomidou.mybatisplus.generator.index;
 
 import com.baomidou.mybatisplus.generator.IGenerateMapperMethodHandler;
+import com.baomidou.mybatisplus.generator.config.ConstVal;
 
 /**
  * @author nieqiurong
@@ -68,6 +69,17 @@ public abstract class AbstractMapperMethodHandler implements IGenerateMapperMeth
         return "fun " + methodName + "(" + args + ")" + " :" + returnValue + " {" + "\n" +
             "        return " + returnBody + ";" + "\n" +
             "    }\n";
+    }
+
+    /**
+     * 判断当前索引名称是否为主键索引 (索引名为PRIMARY或PRIMARY开头的为主键索引)
+     *
+     * @param indexName 索引名称
+     * @return 是否为主键索引
+     * @since 3.5.12
+     */
+    public boolean isPrimaryKey(String indexName) {
+        return indexName.toUpperCase().startsWith(ConstVal.PRIMARY);
     }
 
 }

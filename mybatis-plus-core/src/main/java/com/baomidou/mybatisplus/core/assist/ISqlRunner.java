@@ -23,8 +23,15 @@ import java.util.Map;
 
 /**
  * SqlRunner执行接口
+ * <p>
+ * 自3.5.12开始,(当传入的参数是单参数时,支持使用Map,Array,List,JavaBean)
+ * <li>当参数为 Map 时可通过{key}进行属性访问
+ * <li>当参数为 JavaBean 时可通过{property}进行属性访问
+ * <li>当参数为 List 时直接访问索引 {0} </li>
+ * <li>当参数为 Array 时直接访问索引 {0} </li>
+ * </p>
  *
- * @author yuxiaobin
+ * @author yuxiaobin, nieqiurong
  * @since 2018/2/7
  */
 public interface ISqlRunner {
