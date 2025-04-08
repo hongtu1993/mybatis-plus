@@ -15,6 +15,7 @@
  */
 package com.baomidou.mybatisplus.generator.engine;
 
+import com.alibaba.fastjson2.JSON;
 import com.baomidou.mybatisplus.core.toolkit.StringPool;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.generator.config.*;
@@ -169,6 +170,24 @@ public abstract class AbstractTemplateEngine {
     }
 
     /**
+     * 输出assembler文件
+     *
+     * @param tableInfo 表信息
+     * @param objectMap 渲染数据
+     * @since 3.5.12
+     */
+    protected void outputAssembler(@NotNull TableInfo tableInfo, @NotNull Map<String, Object> objectMap) {
+        System.out.println(objectMap.get("package"));
+        Assembler assembler = this.getConfigBuilder().getStrategyConfig().assembler();
+        String assemblerPath = getPathInfo(OutputFile.assembler);
+        if (assembler.isGenerate()) {
+            String entityName = tableInfo.getEntityName();
+            String assemblerFile = String.format((assemblerPath + File.separator + tableInfo.getAssemblerName() + suffixJavaOrKt()), entityName);
+             outputFile(getOutputFile(assemblerFile, OutputFile.assembler), objectMap, templateFilePath(assembler.getTemplatePath()), getConfigBuilder().getStrategyConfig().assembler().isFileOverride());
+        }
+    }
+
+    /**
      * 输出文件
      *
      * @param file         文件
@@ -247,6 +266,8 @@ public abstract class AbstractTemplateEngine {
                 outputService(tableInfo, objectMap);
                 // controller
                 outputController(tableInfo, objectMap);
+                // assembler
+                outputAssembler(tableInfo, objectMap);
             });
         } catch (Exception e) {
             throw new RuntimeException("无法创建文件，请检查配置信息！", e);

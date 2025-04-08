@@ -114,6 +114,12 @@ public class TableInfo {
     private String controllerName;
 
     /**
+     * assembler名称
+     */
+    @Getter
+    private String assemblerName;
+
+    /**
      * 表字段
      */
     private final List<TableField> fields = new ArrayList<>();
@@ -330,6 +336,7 @@ public class TableInfo {
         this.serviceName = strategyConfig.service().getConverterServiceFileName().convert(entityName);
         this.serviceImplName = strategyConfig.service().getConverterServiceImplFileName().convert(entityName);
         this.controllerName = strategyConfig.controller().getConverterFileName().convert(entityName);
+        this.assemblerName = strategyConfig.assembler().getConverterFileName().convert(entityName);
         this.importPackage();
     }
 

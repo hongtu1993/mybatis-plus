@@ -105,7 +105,9 @@ public class FastAutoGeneratorV2Test extends BaseGeneratorTest {
             // 包路径配置
             .packageConfig(builder -> builder
                 .parent(PACKAGE_PARENT)
-                .pathInfo(Collections.singletonMap(OutputFile.xml, projectPath + File.separator + PROJECT_DIR + PROJECT_NAME + File.separator + "src" + File.separator + "main" + File.separator + "resources" + File.separator + "mapper" + File.separator + MODULE_NAME))
+                .pathInfo(Collections.singletonMap(
+                    OutputFile.xml,
+                    projectPath + File.separator + PROJECT_DIR + PROJECT_NAME + File.separator + "src" + File.separator + "main" + File.separator + "resources" + File.separator + "mapper" + File.separator + MODULE_NAME))
                 .entity("persistence." + MODULE_NAME + ".po")
                 .mapper("persistence." + MODULE_NAME + ".mapper")
                 .service("persistence." + MODULE_NAME + ".facade")
@@ -156,6 +158,7 @@ public class FastAutoGeneratorV2Test extends BaseGeneratorTest {
                 // Assembler配置
                 builder.assemblerBuilder()
                     .enableFileOverride();
+//                    .disableFileOverride();
 
                 String scanner = scanner("表名，多个英文逗号分割,全部输入 *");
                 if (scanner.isEmpty()) {

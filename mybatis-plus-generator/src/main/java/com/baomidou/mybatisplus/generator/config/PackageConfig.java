@@ -34,6 +34,7 @@ import java.util.Map;
  */
 public class PackageConfig {
 
+
     private PackageConfig() {
     }
 
@@ -83,6 +84,12 @@ public class PackageConfig {
      */
     @Getter
     private String controller = "controller";
+
+    /**
+     * mao: Assembler包名
+     */
+    @Getter
+    private String assembler = "assembler";
 
     /**
      * 路径配置信息
@@ -152,6 +159,8 @@ public class PackageConfig {
             packageInfo.put(ConstVal.SERVICE_IMPL, this.joinPackage(this.getServiceImpl()));
             packageInfo.put(ConstVal.CONTROLLER, this.joinPackage(this.getController()));
             packageInfo.put(ConstVal.PARENT, this.getParent());
+            packageInfo.put(ConstVal.ASSEMBLER, this.joinPackage(this.getAssembler()));
+
             if (injectionConfig != null) {
                 List<CustomFile> customFiles = injectionConfig.getCustomFiles();
                 for (CustomFile customFile : customFiles) {
@@ -298,6 +307,12 @@ public class PackageConfig {
          */
         public Builder controller(@NotNull String controller) {
             this.packageConfig.controller = controller;
+            return this;
+        }
+
+
+        public Builder assembler(@NotNull String assembler) {
+            this.packageConfig.assembler = assembler;
             return this;
         }
 

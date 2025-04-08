@@ -128,6 +128,7 @@ public class StrategyConfig {
     private final Mapper.Builder mapperBuilder = new Mapper.Builder(this);
 
     private final Service.Builder serviceBuilder = new Service.Builder(this);
+    private final Assembler.Builder assemblerBuilder = new Assembler.Builder(this);
 
     private Entity entity;
 
@@ -136,6 +137,8 @@ public class StrategyConfig {
     private Mapper mapper;
 
     private Service service;
+
+    private Assembler assembler;
 
     private IOutputFile outputFile = (path, ot) -> new File(path);
 
@@ -189,6 +192,8 @@ public class StrategyConfig {
         return controller;
     }
 
+
+
     /**
      * Mapper配置构建者
      *
@@ -198,6 +203,34 @@ public class StrategyConfig {
     @NotNull
     public Mapper.Builder mapperBuilder() {
         return mapperBuilder;
+    }
+
+    /**
+     * 装配器配置
+     *
+     * @return 控制器配置
+     * @since 3.5.0
+     */
+    @NotNull
+    public Assembler assembler() {
+        if (assembler == null) {
+            this.assembler = assemblerBuilder.get();
+        }
+        return assembler;
+    }
+
+    /**
+     * 装配器配置构建者
+     *
+     * @return 控制器配置构建者
+     * @since 3.5.12
+     */
+    @NotNull
+    public Assembler.Builder assemblerBuilder() {
+        if (assembler == null) {
+            this.assembler = assemblerBuilder.get();
+        }
+        return assemblerBuilder;
     }
 
     /**

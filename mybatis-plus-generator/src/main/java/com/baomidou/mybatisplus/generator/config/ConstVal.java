@@ -30,6 +30,7 @@ public interface ConstVal {
     String MODULE_NAME = "ModuleName";
 
     String ENTITY = "Entity";
+    String ASSEMBLER = "Assembler";
     String SERVICE = "Service";
     String SERVICE_IMPL = "ServiceImpl";
     String MAPPER = "Mapper";
@@ -59,6 +60,11 @@ public interface ConstVal {
      * 控制器模板路径
      */
     String TEMPLATE_CONTROLLER = "/templates/controller.java";
+
+    /**
+     * Assembler模板路径
+     */
+    String TEMPLATE_ASSEMBLER = "/templates/assembler.java";
 
     /**
      * Mapper模板路径

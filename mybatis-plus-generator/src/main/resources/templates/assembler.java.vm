@@ -1,0 +1,13 @@
+package ${package.Assembler};
+
+/**
+ *
+ * $!{table.comment} 装配器
+ *
+ * @author ${author}
+ * @since ${date}
+ */
+public final class ${table.assemblerName} {
+    private ${table.assemblerName}() {throw new IllegalStateException("{error.utilityClass}");}
+
+}

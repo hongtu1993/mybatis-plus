@@ -91,6 +91,12 @@ class PathInfoHandler {
         if (controller.isGenerate()) {
             putPathInfo(injectionConfig, controller.getTemplatePath(), OutputFile.controller, ConstVal.CONTROLLER);
         }
+
+        Assembler assembler = strategyConfig.assembler();
+        if (assembler.isGenerate()) {
+            putPathInfo(injectionConfig, assembler.getTemplatePath(), OutputFile.assembler, ConstVal.ASSEMBLER);
+        }
+
         putPathInfo(injectionConfig, OutputFile.parent, ConstVal.PARENT);
     }
 

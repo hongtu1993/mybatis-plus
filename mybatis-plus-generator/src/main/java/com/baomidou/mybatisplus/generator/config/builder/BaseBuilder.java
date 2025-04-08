@@ -53,6 +53,16 @@ public class BaseBuilder implements IConfigBuilder<StrategyConfig> {
         return strategyConfig.serviceBuilder();
     }
 
+    /**
+     * 获取Assembler构建器。
+     *
+     * @return 装配器构建器对象
+     */
+    @NotNull
+    public Assembler.Builder assemblerBuilder() {
+        return strategyConfig.assemblerBuilder();
+    }
+
     @NotNull
     @Override
     public StrategyConfig build() {
