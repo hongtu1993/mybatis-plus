@@ -3,6 +3,10 @@ package ${package.Assembler};
 /**
  *
  * $!{table.comment} 装配器
+ * <p>
+ * 1. DTO转DO
+ * 2. DO转VO
+ * 3. DTO转Command/Query
  *
  * @author ${author}
  * @since ${date}
