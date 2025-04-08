@@ -1,12 +1,30 @@
+/*
+ * Copyright (c) 2011-2025, baomidou (jobob@qq.com).
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.baomidou.mybatisplus.core.toolkit;
 
+import com.baomidou.mybatisplus.core.config.GlobalConfig;
 import com.baomidou.mybatisplus.core.exceptions.MybatisPlusException;
 import com.baomidou.mybatisplus.core.handlers.IJsonTypeHandler;
+import com.baomidou.mybatisplus.core.metadata.MapperProxyMetadata;
 import com.baomidou.mybatisplus.core.override.MybatisMapperProxy;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.reflection.MetaObject;
 import org.apache.ibatis.reflection.SystemMetaObject;
+import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.defaults.DefaultSqlSession;
@@ -60,19 +78,37 @@ public class MybatisUtils {
 
     /**
      * 获取SqlSessionFactory
+     * <p>当自定义实现{@link SqlSession}时,请实现对{@link SqlSessionFactory}的访问 (spring的方式)</p>
+     * <p>当无法获得{@link SqlSessionFactory}时,需要将{@link SqlSessionFactory}绑定至上下文对象中(原生mybatis访问方式)</p>
      *
      * @param mybatisMapperProxy {@link MybatisMapperProxy}
      * @return SqlSessionFactory
+     * @see DefaultSqlSession
+     * @see GlobalConfigUtils#getGlobalConfig(Configuration)
+     * @see GlobalConfigUtils#setGlobalConfig(Configuration, GlobalConfig)
      * @since 3.5.7
      */
     public static SqlSessionFactory getSqlSessionFactory(MybatisMapperProxy<?> mybatisMapperProxy) {
         SqlSession sqlSession = mybatisMapperProxy.getSqlSession();
-        if (sqlSession instanceof DefaultSqlSession) {
-            // TODO 原生mybatis下只能这样了.
-            return GlobalConfigUtils.getGlobalConfig(mybatisMapperProxy.getSqlSession().getConfiguration()).getSqlSessionFactory();
-        }
+        return getSqlSessionFactory(sqlSession);
+    }
+
+    /**
+     * 获取sqlSession中的SqlSessionFactory
+     *
+     * @param sqlSession sqlSession会话
+     * @return SqlSessionFactory
+     * @since 3.5.12
+     */
+    public static SqlSessionFactory getSqlSessionFactory(SqlSession sqlSession) {
         MetaObject metaObject = SystemMetaObject.forObject(sqlSession);
-        return (SqlSessionFactory) metaObject.getValue("sqlSessionFactory");
+        String property = "sqlSessionFactory";
+        if (metaObject.hasGetter(property)) {
+            return (SqlSessionFactory) metaObject.getValue(property);
+        }
+        SqlSessionFactory sqlSessionFactory = GlobalConfigUtils.getGlobalConfig(sqlSession.getConfiguration()).getSqlSessionFactory();
+        Assert.isTrue(sqlSessionFactory != null, "Please implement access to the sqlSessionFactory property or bind sqlSessionFactory to global access.");
+        return sqlSessionFactory;
     }
 
     /**
@@ -102,6 +138,46 @@ public class MybatisUtils {
             return (MybatisMapperProxy<?>) result;
         }
         throw new MybatisPlusException("Unable to get MybatisMapperProxy : " + mapper);
+    }
+
+    /**
+     * 提取MapperProxy
+     *
+     * @param mapper Mapper对象
+     * @return 真实Mapper对象(去除动态代理增强)
+     * @since 3.5.12
+     */
+    public static Object extractMapperProxy(Object mapper) {
+        if (mapper instanceof MybatisMapperProxy) {
+            // fast return
+            return mapper;
+        }
+        Object result = mapper;
+        if (AopUtils.isLoadSpringAop()) {
+            while (org.springframework.aop.support.AopUtils.isAopProxy(result)) {
+                result = AopProxyUtils.getSingletonTarget(result);
+            }
+        }
+        if (result != null) {
+            while (Proxy.isProxyClass(result.getClass())) {
+                result = Proxy.getInvocationHandler(result);
+            }
+        }
+        return result;
+    }
+
+
+    /**
+     * 获取MapperProxy元数据信息
+     *
+     * @param mapper Mapper对象
+     * @return 代理属性
+     * @since 3.5.12
+     */
+    public static MapperProxyMetadata getMapperProxy(Object mapper) {
+        Object mapperProxy = extractMapperProxy(mapper);
+        MetaObject metaObject = SystemMetaObject.forObject(mapperProxy);
+        return new MapperProxyMetadata(metaObject);
     }
 
 }
